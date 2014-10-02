@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.ngse;
+package com.ngse.riib;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
