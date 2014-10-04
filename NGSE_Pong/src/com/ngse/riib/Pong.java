@@ -117,16 +117,14 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         if(gameBall.getX() < 0) score(1);
         if(gameBall.getX() + gameBall.getSize() > fSizeX) score(2);
         
-        //If the gameBall hits the p1 paddle
-        
         int bCent = gameBall.getCenterY();
-        //If hits top of paddle
-        if((gameBall.getX() + gameBall.getSize() <= p1X + pSizeX) && (gameBall.getX() + gameBall.getSize() >= p1X + pSizeX - 1) ) {
+        //If the gameBall hits the p1 paddle
+        if( (gameBall.getX() <= p1X + pSizeX) && (gameBall.getX() >= p1X + pSizeX - 3) ) {
             //If hits top or bottom
             if((bCent >= p1Y && bCent < p1Y + ((1/3) * pSizeY)) || 
                 (bCent > p1Y + ((2/3) * pSizeY) && bCent <= p1Y + pSizeY)) {
                 gameBall.setmvX(gameBall.getmvX()*-1);
-                gameBall.setX(p1X+pSizeX+3);
+                gameBall.setX(p1X+pSizeX+1);
                 switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
                     case 1: gameBall.setmvY(1 * -gameBall.getmvY());
                     case 2: gameBall.setmvY(2 * -gameBall.getmvY());
@@ -135,7 +133,7 @@ public class Pong extends JFrame implements ActionListener , KeyListener
             } else
             //if hits middle
             if(bCent >= p1Y + ((1/3) * pSizeY) && bCent <= p1Y + ((2/3) * pSizeY)) {
-                gameBall.setX(p1X+pSizeX+3);
+                gameBall.setX(p1X+pSizeX+1);
                 gameBall.setmvX(gameBall.getmvX()*-1);
             }
             //if hits bottom
@@ -146,12 +144,12 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         }
         
         //If the gameBall hits the p2 paddle        
-        if(gameBall.getX() + gameBall.getSize() >= p2X) {
+        if((gameBall.getX() + gameBall.getSize() >= p2X) && (gameBall.getX() + gameBall.getSize() <= p2X + pSizeX - 3) ) {
             //top or bottom
             if((bCent >= p2Y && bCent < p2Y + ((1/3) * pSizeY)) ||
                 (bCent > p2Y + ((2/3) * pSizeY) && bCent <= p2Y + pSizeY)) {
                 gameBall.setmvX(gameBall.getmvX()*-1);
-                gameBall.setX(p2X-pSizeX-3);
+                gameBall.setX(p2X-pSizeX-1);
                 switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
                     case 1: gameBall.setmvY(1 * -gameBall.getmvY());
                     case 2: gameBall.setmvY(2 * -gameBall.getmvY());
@@ -160,7 +158,7 @@ public class Pong extends JFrame implements ActionListener , KeyListener
                 } else
             //middle
             if(bCent >= p2Y + ((1/3) * pSizeY) && bCent <= p2Y + ((2/3) * pSizeY)) {
-                gameBall.setX(p2X-pSizeX-3);
+                gameBall.setX(p2X-pSizeX-1);
                 gameBall.setmvX(gameBall.getmvX() * -1);}
             else {
                 //do nothing
