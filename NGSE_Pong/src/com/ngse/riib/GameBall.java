@@ -6,7 +6,7 @@
 
 package com.ngse.riib;
 
-
+import java.awt.geom.*;
 
 
 public class GameBall {
@@ -37,5 +37,13 @@ public class GameBall {
     public int getX() {return x;}
     public int getY() {return y;}
     public int getmvX() {return mvX;}
-    public int getmvY() {return mvY;}    
+    public int getmvY() {return mvY;}
+    public int getSize() {return size;}
+    public int getCenterX() {return x+(size/2);}
+    public int getCenterY() {return y+(size/2);}
+    
+    public Ellipse2D getEllipse() {
+        Ellipse2D elip = new Ellipse2D.Double(x,y,size,size);
+        return elip;
+    }
 }

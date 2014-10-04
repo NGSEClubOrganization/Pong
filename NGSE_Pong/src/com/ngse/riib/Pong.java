@@ -6,22 +6,6 @@
 
 package com.ngse.riib;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author Henry
- */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -64,7 +48,7 @@ public class Pong extends JFrame implements ActionListener , KeyListener
     private static int p2Speed = 1;
     private static Rectangle2D p2 = new Rectangle2D.Double(p2X-pSizeX/2, p2Y-pSizeY/2, pSizeX, pSizeY);
     
-    private static GameBall gameBall = new GameBall(fSizeX/2-5,fSizeY/2-5,0,0,5);
+    private static GameBall gameBall = new GameBall(fSizeX/2-5,fSizeY/2-5,0,0,20);
     
     private static Rectangle2D rect = new Rectangle2D.Double(0,0,fSizeX,fSizeY);
     
@@ -93,6 +77,9 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         g2.fill(p1);
         p2.setRect(p2X-pSizeX/2, p2Y-pSizeY/2, pSizeX, pSizeY);
         g2.fill(p2);
+        
+        g2.setColor(Color.RED);
+        g2.fill(gameBall.getEllipse());
     }
     
     public void update() {
@@ -122,14 +109,89 @@ public class Pong extends JFrame implements ActionListener , KeyListener
             }
         }
         
-        if(gameBall.getX() < 0) {
-            playerScore("p1");
-        } else
-        if(x <= p1X) {
-            if(
+        updateGameBall();
+    }
+    
+    public void updateGameBall() {
+        //If the gameBall has gotten past either player
+        if(gameBall.getX() < 0) score(1);
+        if(gameBall.getX() + gameBall.getSize() > fSizeX) score(2);
+        
+        //If the gameBall hits the p1 paddle
+        
+        int bCent = gameBall.getCenterY();
+        //If hits top of paddle
+        if((gameBall.getX() + gameBall.getSize() <= p1X + pSizeX) && (gameBall.getX() + gameBall.getSize() >= p1X + pSizeX - 1) ) {
+            //If hits top or bottom
+            if((bCent >= p1Y && bCent < p1Y + ((1/3) * pSizeY)) || 
+                (bCent > p1Y + ((2/3) * pSizeY) && bCent <= p1Y + pSizeY)) {
+                gameBall.setmvX(gameBall.getmvX()*-1);
+                gameBall.setX(p1X+pSizeX+3);
+                switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
+                    case 1: gameBall.setmvY(1 * -gameBall.getmvY());
+                    case 2: gameBall.setmvY(2 * -gameBall.getmvY());
+                    case 3: gameBall.setmvY(3 * -gameBall.getmvY());
+                }
+            } else
+            //if hits middle
+            if(bCent >= p1Y + ((1/3) * pSizeY) && bCent <= p1Y + ((2/3) * pSizeY)) {
+                gameBall.setX(p1X+pSizeX+3);
+                gameBall.setmvX(gameBall.getmvX()*-1);
+            }
+            //if hits bottom
+            //if(bCent > p1Y + ((2/3) * pSizeY) && bCent <= p1Y + pSizeY) {} 
+            else {
+                //do nothing
+            }
         }
+        
+        //If the gameBall hits the p2 paddle        
+        if(gameBall.getX() + gameBall.getSize() >= p2X) {
+            //top or bottom
+            if((bCent >= p2Y && bCent < p2Y + ((1/3) * pSizeY)) ||
+                (bCent > p2Y + ((2/3) * pSizeY) && bCent <= p2Y + pSizeY)) {
+                gameBall.setmvX(gameBall.getmvX()*-1);
+                gameBall.setX(p2X-pSizeX-3);
+                switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
+                    case 1: gameBall.setmvY(1 * -gameBall.getmvY());
+                    case 2: gameBall.setmvY(2 * -gameBall.getmvY());
+                    case 3: gameBall.setmvY(3 * -gameBall.getmvY());
+                }
+                } else
+            //middle
+            if(bCent >= p2Y + ((1/3) * pSizeY) && bCent <= p2Y + ((2/3) * pSizeY)) {
+                gameBall.setX(p2X-pSizeX-3);
+                gameBall.setmvX(gameBall.getmvX() * -1);}
+            else {
+                //do nothing
+            }
+        }
+        
+        //If the gameBall hits a wall
+        int getY = gameBall.getY();
+        if((getY <= 0 || getY >= fSizeY)) {
+            gameBall.setmvY(gameBall.getmvY() * -1);
+        }
+        
+        int getX = gameBall.getX();
+        if((getX <= 0 || getX >= fSizeX)) {
+            gameBall.setmvX(gameBall.getmvX() * -1);
+        }
+        
         gameBall.move();
     }
+    
+    public void score(int player) {
+        switch(player) {
+            case 1:
+                reset();
+                //player 1 scored!
+            case 2: reset();
+                //player 2 scored!
+        }
+    }
+    
+    public void reset() {}
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -180,10 +242,14 @@ public class Pong extends JFrame implements ActionListener , KeyListener
     public static void main(String[] args) {
         JFrame frame = new Pong();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Pong");
 
         frame.setSize(fSizeX,fSizeY);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        
+        gameBall.setmvX(1);
+        gameBall.setmvY(0);
         
         frame.setVisible(true);
     }
