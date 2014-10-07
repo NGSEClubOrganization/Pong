@@ -54,7 +54,7 @@ public class Pong extends JFrame implements ActionListener , KeyListener
     
     @SuppressWarnings("LeakingThisInConstructor")
     public Pong() {
-        timer = new Timer(3,this);
+        timer = new Timer(5,this);
         timer.setInitialDelay(200);
         timer.start();
         addKeyListener(this);
@@ -117,24 +117,27 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         if(gameBall.getX() < 0) score(1);
         if(gameBall.getX() + gameBall.getSize() > fSizeX) score(2);
         
-        int bCent = gameBall.getCenterY();
         //If the gameBall hits the p1 paddle
-        if( (gameBall.getX() <= p1X + pSizeX) && (gameBall.getX() >= p1X + pSizeX - 3) ) {
+        
+        int bCent = gameBall.getCenterY();
+        //If hits top of paddle
+        if((gameBall.getX() + gameBall.getSize() <= p1X + pSizeX) && (gameBall.getX() + gameBall.getSize() >= p1X + pSizeX - 1) ) {
             //If hits top or bottom
             if((bCent >= p1Y && bCent < p1Y + ((1/3) * pSizeY)) || 
                 (bCent > p1Y + ((2/3) * pSizeY) && bCent <= p1Y + pSizeY)) {
                 gameBall.setmvX(gameBall.getmvX()*-1);
-                gameBall.setX(p1X+pSizeX+1);
-                switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
-                    case 1: gameBall.setmvY(1 * -gameBall.getmvY());
-                    case 2: gameBall.setmvY(2 * -gameBall.getmvY());
-                    case 3: gameBall.setmvY(3 * -gameBall.getmvY());
+                gameBall.setX(p1X+pSizeX+3);
+                switch(Math.abs(gameBall.getmvY())) {
+                    case 1: gameBall.setmvY(2 * -gameBall.getmvY());
+                    case 2: gameBall.setmvY(1 * -gameBall.getmvY());
+                    //case 3: gameBall.setmvY(3 * -gameBall.getmvY());
                 }
             } else
             //if hits middle
             if(bCent >= p1Y + ((1/3) * pSizeY) && bCent <= p1Y + ((2/3) * pSizeY)) {
-                gameBall.setX(p1X+pSizeX+1);
+                gameBall.setX(p1X+pSizeX+3);
                 gameBall.setmvX(gameBall.getmvX()*-1);
+                System.out.println("HITS MIDDLE");
             }
             //if hits bottom
             //if(bCent > p1Y + ((2/3) * pSizeY) && bCent <= p1Y + pSizeY) {} 
@@ -143,53 +146,63 @@ public class Pong extends JFrame implements ActionListener , KeyListener
             }
         }
         
+        
         //If the gameBall hits the p2 paddle        
-        if((gameBall.getX() + gameBall.getSize() >= p2X) && (gameBall.getX() + gameBall.getSize() <= p2X + pSizeX - 3) ) {
+        if(gameBall.getX() + gameBall.getSize() >= p2X) {
             //top or bottom
             if((bCent >= p2Y && bCent < p2Y + ((1/3) * pSizeY)) ||
                 (bCent > p2Y + ((2/3) * pSizeY) && bCent <= p2Y + pSizeY)) {
                 gameBall.setmvX(gameBall.getmvX()*-1);
-                gameBall.setX(p2X-pSizeX-1);
-                switch(Math.abs(gameBall.getmvY())/Math.abs(gameBall.getmvY())) {
-                    case 1: gameBall.setmvY(1 * -gameBall.getmvY());
-                    case 2: gameBall.setmvY(2 * -gameBall.getmvY());
-                    case 3: gameBall.setmvY(3 * -gameBall.getmvY());
+                gameBall.setX(p2X-pSizeX-3);
+                switch(Math.abs(gameBall.getmvY())) {
+                    case 1: gameBall.setmvY(2 * -gameBall.getmvY());
+                    case 2: gameBall.setmvY(1 * -gameBall.getmvY());
+                    //case 3: gameBall.setmvY(3 * -gameBall.getmvY());
                 }
                 } else
             //middle
             if(bCent >= p2Y + ((1/3) * pSizeY) && bCent <= p2Y + ((2/3) * pSizeY)) {
-                gameBall.setX(p2X-pSizeX-1);
-                gameBall.setmvX(gameBall.getmvX() * -1);}
+                gameBall.setX(p2X-pSizeX-3);
+                gameBall.setmvX(gameBall.getmvX() * -1);
+                System.out.println("HITS MIDDLE");
+            }
             else {
                 //do nothing
             }
         }
         
+        
         //If the gameBall hits a wall
         int getY = gameBall.getY();
-        if((getY <= 0 || getY >= fSizeY)) {
+        if((getY <= 0 + (gameBall.getSize()) || getY >= fSizeY - (gameBall.getSize()))) {
             gameBall.setmvY(gameBall.getmvY() * -1);
         }
         
         int getX = gameBall.getX();
-        if((getX <= 0 || getX >= fSizeX)) {
-            gameBall.setmvX(gameBall.getmvX() * -1);
+        if(getX <= 0) {
+            //gameBall.setmvX(gameBall.getmvX() * -1);
+            score(1);
+        } else if(getX >= fSizeX - (gameBall.getSize())) {
+            score(2);
         }
         
         gameBall.move();
     }
     
     public void score(int player) {
-        switch(player) {
-            case 1:
-                reset();
-                //player 1 scored!
-            case 2: reset();
-                //player 2 scored!
-        }
+        
+        System.out.println("Player " + player + " scores!");
+        reset();
+        
     }
     
-    public void reset() {}
+    public void reset() {
+        gameBall.setX(fSizeX/2);
+        gameBall.setX(fSizeY/2);
+        gameBall.setmvY( (int) (Math.random()*2) + 1 );
+        gameBall.setmvX( (int) (Math.random()) + 1);
+        if(gameBall.getmvX() == 2) { gameBall.setmvX(-1); }
+    }
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -231,12 +244,6 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         repaint();
     }
     
-    public void playerScore(String player) {
-        if(player == "p1") {}
-        if(player == "p2") {}
-    }
-    
-    
     public static void main(String[] args) {
         JFrame frame = new Pong();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -247,7 +254,7 @@ public class Pong extends JFrame implements ActionListener , KeyListener
         frame.setResizable(false);
         
         gameBall.setmvX(1);
-        gameBall.setmvY(0);
+        gameBall.setmvY(1);
         
         frame.setVisible(true);
     }
