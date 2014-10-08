@@ -155,9 +155,11 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
                 //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
                 case 1:
                     gameBall.setmvY(2 * gameBall.getmvY());
+                    break;
                 //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
                 case 2:
                     gameBall.setmvY((1 / 2) * gameBall.getmvY());
+                    break;
             }
             System.out.println("HITS TOP/BOTTOM");
         } //If hits middle of paddle
@@ -176,9 +178,11 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
                 //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
                 case 1:
                     gameBall.setmvY(2 * gameBall.getmvY());
+                    break;
                 //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
                 case 2:
                     gameBall.setmvY((1 / 2) * gameBall.getmvY());
+                    break;
             }
             System.out.println("HITS TOP/BOTTOM");
         } //If hits middle of paddle
