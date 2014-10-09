@@ -116,30 +116,14 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
             score(2);
         }
 
-        //Colliders:
-        // p1 colliders
-        Rectangle p1top = new Rectangle((p1X + pSizeX - 3), (p1Y), 3, pSizeY / 3);
-        p1top.translate(0, pSizeY * (1 / 3));
-        Rectangle p1middle = p1top;
-        p1top.translate(0, pSizeY * (1 / 3));
-        Rectangle p1bottom = p1top;
-        p1top = new Rectangle((p1X + pSizeX - 2), (p1Y), pSizeX, pSizeY);
-        // p2 colliders
-        Rectangle p2top = new Rectangle(p2X, p2Y, 3, pSizeY / 3);
-        p2top.translate(0, pSizeY * (1 / 3));
-        Rectangle p2middle = p2top;
-        p2top.translate(0, pSizeY * (1 / 3));
-        Rectangle p2bottom = p2top;
-        p2top = new Rectangle((p1X + pSizeX - 2), (p2Y), pSizeX, pSizeY);
-
         //Collider points on gameBall
         double bCent = gameBall.getCenterY();
 
         //Hits p1 paddle
         if( new Rectangle(p1X,p1Y,pSizeX,pSizeY).contains(
             new Point(
-                (int) (gameBall.getCenterX()-gameBall.getSize()/2),
-                (int) (gameBall.getCenterY()))
+                (int) (gameBall.getCenterX()-(gameBall.getSize()/2)), //left-middle X of ball
+                (int) (gameBall.getCenterY())) //left-middle Y of ball
         )
         ) {
 
@@ -155,8 +139,8 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
 		//Hits p2 paddle
         if( new Rectangle(p2X,p2Y,pSizeX,pSizeY).contains(
             new Point(
-                (int) (gameBall.getCenterX()+gameBall.getSize()/2),
-                (int) (gameBall.getCenterY()))
+                (int) (gameBall.getCenterX()+(gameBall.getSize()/2)), //right-middle X of ball
+                (int) (gameBall.getCenterY())) //right-middle Y of ball
         )
         ) {
 
@@ -169,57 +153,6 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
             gameBall.setmvY( (int) (2 * Math.sin(angle2) * -1));
 
         }
-
-        //If the gameBall hits the p1 paddle
-        //If hits top or bottom of paddle
-
-        /*
-        if (p1top.contains(bLeftCenter) || p1bottom.contains(bLeftCenter)) {
-        gameBall.setmvX(gameBall.getmvX() * -1);
-        gameBall.setX(p1X + pSizeX + 3);
-        switch (Math.abs(gameBall.getmvY())) {
-        //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
-        case 1:
-        //gameBall.setmvY(2 * gameBall.getmvY());
-        break;
-        //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
-        case 2:
-
-        //gameBall.setmvY((1 / 2) * gameBall.getmvY());
-        break;
-        }
-        System.out.println("HITS TOP/BOTTOM");
-        } //If hits middle of paddle
-        else if (p1middle.contains(bLeftCenter)) {
-        gameBall.setX(p1X + pSizeX + 3);
-        gameBall.setmvX(gameBall.getmvX() * -1);
-        System.out.println("HITS MIDDLE");
-        }
-
-        //If the gameBall hits the p2 paddle
-        //If hits top or bottom of paddle
-        if (p2top.contains(bRightCenter) || p2bottom.contains(bRightCenter)) {
-        gameBall.setmvX(gameBall.getmvX() * -1);
-        gameBall.setX(p2X + pSizeX + 3);
-        switch (Math.abs(gameBall.getmvY())) {
-        //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
-        case 1:
-        gameBall.setmvY(2 * gameBall.getmvY());
-        break;
-        //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
-        case 2:
-        gameBall.setmvY((1 / 2) * gameBall.getmvY());
-        break;
-        }
-        System.out.println("HITS TOP/BOTTOM");
-        } //If hits middle of paddle
-        else if (p2middle.contains(bLeftCenter)) {
-        gameBall.setX(p2X + pSizeX + 3);
-        gameBall.setmvX(gameBall.getmvX() * -1);
-        System.out.println("HITS MIDDLE");
-        }
-         */
-
         //If the gameBall hits a wall
         double getY = gameBall.getY();
         if ((getY <= 0 + (gameBall.getSize()) || getY >= fSizeY - (gameBall.getSize()))) {
@@ -245,13 +178,13 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
     }
 
     public void reset() {
+        //Reset gameball
         gameBall.setX(fSizeX / 2);
-        gameBall.setX(fSizeY / 2);
-        gameBall.setmvY((int) (Math.random() * 2) + 1);
-        gameBall.setmvX((int) (Math.random()) + 1);
-        if (gameBall.getmvX() == 2) {
-            gameBall.setmvX(-1);
-        }
+        gameBall.setY( (int) ( (fSizeY / 2) + ( ((Math.random() * 19) + 1) * (int) ((Math.random()) * 2) - 1 ) ) );
+        
+        double x = ( (Math.random()*Math.PI/2)-Math.PI/4 );
+        gameBall.setmvX( (int) ((Math.cos(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
+        gameBall.setmvY( (int) ((Math.sin(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
     }
 
     @Override
@@ -307,10 +240,22 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-        gameBall.setmvX(1);
-        gameBall.setmvY(1);
+        
+        //Reset gameball
+        gameBall.setX(fSizeX / 2);
+        gameBall.setY( (int) ( (fSizeY / 2) + ( ((Math.random() * 19) + 1) * (int) ((Math.random()) * 2) - 1 ) ) );
+        
+        double x = ( (Math.random()*Math.PI/2)-Math.PI/4 );
+        gameBall.setmvX( (int) ((Math.cos(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
+        
+        Math.cos(x) * (int) (Math.random()*2)
+        
+        gameBall.setmvY( (int) ((Math.sin(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
 
         frame.setVisible(true);
+        System.out.println(x);
+        System.out.println(gameBall.getmvX());
+        System.out.println(gameBall.getmvY());
     }
 
 }
