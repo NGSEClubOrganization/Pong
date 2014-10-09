@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.ngse.riib;
 
@@ -11,7 +6,7 @@ import java.awt.geom.*;
 
 public class GameBall {
     
-    private int x, y, mvX, mvY, size;
+    private double x, y, mvX, mvY, size;
     
     public GameBall(int parx, int pary, int parmvX, int parmvY, int parSize) {
         x = parx;
@@ -34,13 +29,13 @@ public class GameBall {
     public void setSize(int parSize) {size = parSize;}
     
     //Gets
-    public int getX() {return x;}
-    public int getY() {return y;}
-    public int getmvX() {return mvX;}
-    public int getmvY() {return mvY;}
-    public int getSize() {return size;}
-    public int getCenterX() {return x+(size/2);}
-    public int getCenterY() {return y+(size/2);}
+    public double getX() {return x;}
+    public double getY() {return y;}
+    public double getmvX() {return mvX;}
+    public double getmvY() {return mvY;}
+    public double getSize() {return size;}
+    public double getCenterX() {return x+(size/2);}
+    public double getCenterY() {return y+(size/2);}
     
     public Ellipse2D getEllipse() {
         Ellipse2D elip = new Ellipse2D.Double(x,y,size,size);

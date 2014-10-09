@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.ngse.riib;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -58,7 +49,7 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
 
     @SuppressWarnings("LeakingThisInConstructor")
     public TestPong() {
-        timer = new Timer(5, this);
+        timer = new Timer(10, this);
         timer.setInitialDelay(200);
         timer.start();
         addKeyListener(this);
@@ -142,63 +133,100 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
         p2top = new Rectangle((p1X + pSizeX - 2), (p2Y), pSizeX, pSizeY);
 
         //Collider points on gameBall
-        int bCent = gameBall.getCenterY();
-        Point bLeftCenter = new Point(gameBall.getCenterX(), bCent - gameBall.getSize() / 2);
-        Point bRightCenter = new Point(gameBall.getCenterX(), bCent + gameBall.getSize() / 2);
+        double bCent = gameBall.getCenterY();
+
+        //Hits p1 paddle
+        if( new Rectangle(p1X,p1Y,pSizeX,pSizeY).contains(
+            new Point(
+                (int) (gameBall.getCenterX()-gameBall.getSize()/2),
+                (int) (gameBall.getCenterY()))
+        )
+        ) {
+
+            double p1Cent = p1Y + ( pSizeY / 2 );
+            double xDiff1 = pSizeX / 2 + gameBall.getSize()/2;
+            double yDiff1 = p1Cent - (bCent-gameBall.getSize());
+            double angle1 = Math.atan2(yDiff1, xDiff1);
+
+            gameBall.setmvX( (int) (2 * Math.cos(angle1)));
+            gameBall.setmvY( (int) (2 * Math.sin(angle1) * -1));
+
+        }
+		//Hits p2 paddle
+        if( new Rectangle(p2X,p2Y,pSizeX,pSizeY).contains(
+            new Point(
+                (int) (gameBall.getCenterX()+gameBall.getSize()/2),
+                (int) (gameBall.getCenterY()))
+        )
+        ) {
+
+            double p2Cent = p2Y + ( pSizeY / 2 );
+            double xDiff2 = pSizeX / 2 + gameBall.getSize()/2;
+            double yDiff2 = p2Cent - (bCent-gameBall.getSize());
+            double angle2 = Math.atan2(yDiff2, xDiff2);
+
+            gameBall.setmvX( (int) (2 * Math.cos(angle2)));
+            gameBall.setmvY( (int) (2 * Math.sin(angle2) * -1));
+
+        }
 
         //If the gameBall hits the p1 paddle
         //If hits top or bottom of paddle
+
+        /*
         if (p1top.contains(bLeftCenter) || p1bottom.contains(bLeftCenter)) {
-            gameBall.setmvX(gameBall.getmvX() * -1);
-            gameBall.setX(p1X + pSizeX + 3);
-            switch (Math.abs(gameBall.getmvY())) {
-                //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
-                case 1:
-                    gameBall.setmvY(2 * gameBall.getmvY());
-                    break;
-                //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
-                case 2:
-                    gameBall.setmvY((1 / 2) * gameBall.getmvY());
-                    break;
-            }
-            System.out.println("HITS TOP/BOTTOM");
+        gameBall.setmvX(gameBall.getmvX() * -1);
+        gameBall.setX(p1X + pSizeX + 3);
+        switch (Math.abs(gameBall.getmvY())) {
+        //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
+        case 1:
+        //gameBall.setmvY(2 * gameBall.getmvY());
+        break;
+        //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
+        case 2:
+
+        //gameBall.setmvY((1 / 2) * gameBall.getmvY());
+        break;
+        }
+        System.out.println("HITS TOP/BOTTOM");
         } //If hits middle of paddle
         else if (p1middle.contains(bLeftCenter)) {
-            gameBall.setX(p1X + pSizeX + 3);
-            gameBall.setmvX(gameBall.getmvX() * -1);
-            System.out.println("HITS MIDDLE");
+        gameBall.setX(p1X + pSizeX + 3);
+        gameBall.setmvX(gameBall.getmvX() * -1);
+        System.out.println("HITS MIDDLE");
         }
 
         //If the gameBall hits the p2 paddle
         //If hits top or bottom of paddle
         if (p2top.contains(bRightCenter) || p2bottom.contains(bRightCenter)) {
-            gameBall.setmvX(gameBall.getmvX() * -1);
-            gameBall.setX(p2X + pSizeX + 3);
-            switch (Math.abs(gameBall.getmvY())) {
-                //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
-                case 1:
-                    gameBall.setmvY(2 * gameBall.getmvY());
-                    break;
-                //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
-                case 2:
-                    gameBall.setmvY((1 / 2) * gameBall.getmvY());
-                    break;
-            }
-            System.out.println("HITS TOP/BOTTOM");
+        gameBall.setmvX(gameBall.getmvX() * -1);
+        gameBall.setX(p2X + pSizeX + 3);
+        switch (Math.abs(gameBall.getmvY())) {
+        //Make the ball reflect to a slope of 2/1 if it is at 1/1 on impact)
+        case 1:
+        gameBall.setmvY(2 * gameBall.getmvY());
+        break;
+        //Make the ball reflect to a slope of 1/1 if it is at 2/1 on impact)
+        case 2:
+        gameBall.setmvY((1 / 2) * gameBall.getmvY());
+        break;
+        }
+        System.out.println("HITS TOP/BOTTOM");
         } //If hits middle of paddle
         else if (p2middle.contains(bLeftCenter)) {
-            gameBall.setX(p2X + pSizeX + 3);
-            gameBall.setmvX(gameBall.getmvX() * -1);
-            System.out.println("HITS MIDDLE");
+        gameBall.setX(p2X + pSizeX + 3);
+        gameBall.setmvX(gameBall.getmvX() * -1);
+        System.out.println("HITS MIDDLE");
         }
+         */
 
         //If the gameBall hits a wall
-        int getY = gameBall.getY();
+        double getY = gameBall.getY();
         if ((getY <= 0 + (gameBall.getSize()) || getY >= fSizeY - (gameBall.getSize()))) {
-            gameBall.setmvY(gameBall.getmvY() * -1);
+            gameBall.setmvY( (int) (gameBall.getmvY() * -1));
         }
 
-        int getX = gameBall.getX();
+        int getX = (int) gameBall.getX();
         if (getX <= 0) {
             //gameBall.setmvX(gameBall.getmvX() * -1);
             score(1);
