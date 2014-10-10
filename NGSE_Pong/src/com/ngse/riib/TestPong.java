@@ -248,11 +248,11 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
         double x = ( (Math.random()*Math.PI/2)-Math.PI/4 );
         gameBall.setmvX( (int) ((Math.cos(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
         
-<<<<<<< HEAD
+
         //Math.cos(x) * (int) (Math.random()*2)
-=======
-        Math.cos(x) * (int) (Math.random()*2)
->>>>>>> FETCH_HEAD
+
+        //Math.cos(x) * (int) (Math.random()*2)
+
         
         gameBall.setmvY( (int) ((Math.sin(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
 
