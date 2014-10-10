@@ -1,22 +1,18 @@
-
 package com.ngse.riib;
 
+import java.awt.*;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Graphics2D.*;
-import java.awt.RenderingHints;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.*;
-import java.awt.event.*;
-import java.awt.*;
-
+import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-public class TestPong extends JFrame implements ActionListener, KeyListener {
+public class Pong extends JFrame implements ActionListener, KeyListener {
 
     Timer timer;
     ActionListener actLis;
@@ -48,7 +44,7 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
     private static Rectangle2D rect = new Rectangle2D.Double(0, 0, fSizeX, fSizeY);
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public TestPong() {
+    public Pong() {
         timer = new Timer(10, this);
         timer.setInitialDelay(200);
         timer.start();
@@ -120,43 +116,41 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
         double bCent = gameBall.getCenterY();
 
         //Hits p1 paddle
-        if( new Rectangle(p1X,p1Y,pSizeX,pSizeY).contains(
-            new Point(
-                (int) (gameBall.getCenterX()-(gameBall.getSize()/2)), //left-middle X of ball
-                (int) (gameBall.getCenterY())) //left-middle Y of ball
-        )
-        ) {
+        if (p1.contains(
+                new Point(
+                        (int) (gameBall.getCenterX() - (gameBall.getSize() / 2)), //left-middle X of ball
+                        (int) (gameBall.getCenterY())) //left-middle Y of ball
+        )) {
 
-            double p1Cent = p1Y + ( pSizeY / 2 );
-            double xDiff1 = pSizeX / 2 + gameBall.getSize()/2;
-            double yDiff1 = p1Cent - (bCent-gameBall.getSize());
+            double p1Cent = p1Y + (pSizeY / 2);
+            double xDiff1 = pSizeX / 2 + gameBall.getSize() / 2;
+            double yDiff1 = p1Cent - (bCent - gameBall.getSize());
             double angle1 = Math.atan2(yDiff1, xDiff1);
 
-            gameBall.setmvX( (int) (2 * Math.cos(angle1)));
-            gameBall.setmvY( (int) (2 * Math.sin(angle1) * -1));
+            gameBall.setmvX((int) (((Math.cos(angle1)))*5));
+            gameBall.setmvY((int) (((Math.sin(angle1)))*5) * -1);
 
         }
-		//Hits p2 paddle
-        if( new Rectangle(p2X,p2Y,pSizeX,pSizeY).contains(
-            new Point(
-                (int) (gameBall.getCenterX()+(gameBall.getSize()/2)), //right-middle X of ball
-                (int) (gameBall.getCenterY())) //right-middle Y of ball
-        )
-        ) {
+        //Hits p2 paddle
+        if (p2.contains(
+                new Point(
+                        (int) (gameBall.getCenterX() + (gameBall.getSize() / 2)), //right-middle X of ball
+                        (int) (gameBall.getCenterY())) //right-middle Y of ball
+        )) {
 
-            double p2Cent = p2Y + ( pSizeY / 2 );
-            double xDiff2 = pSizeX / 2 + gameBall.getSize()/2;
-            double yDiff2 = p2Cent - (bCent-gameBall.getSize());
+            double p2Cent = p2Y + (pSizeY / 2);
+            double xDiff2 = pSizeX / 2 + gameBall.getSize() / 2;
+            double yDiff2 = p2Cent - (bCent - gameBall.getSize());
             double angle2 = Math.atan2(yDiff2, xDiff2);
 
-            gameBall.setmvX( (int) (2 * Math.cos(angle2)));
-            gameBall.setmvY( (int) (2 * Math.sin(angle2) * -1));
+            gameBall.setmvX((int) (((Math.cos(angle2)))*5) * -1);
+            gameBall.setmvY((int) (((Math.sin(angle2)))*5) * -1);
 
         }
         //If the gameBall hits a wall
         double getY = gameBall.getY();
         if ((getY <= 0 + (gameBall.getSize()) || getY >= fSizeY - (gameBall.getSize()))) {
-            gameBall.setmvY( (int) (gameBall.getmvY() * -1));
+            gameBall.setmvY((int) (gameBall.getmvY() * -1));
         }
 
         int getX = (int) gameBall.getX();
@@ -179,12 +173,32 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
 
     public void reset() {
         //Reset gameball
-        gameBall.setX(fSizeX / 2);
-        gameBall.setY( (int) ( (fSizeY / 2) + ( ((Math.random() * 19) + 1) * (int) ((Math.random()) * 2) - 1 ) ) );
+            System.out.println("DURING: Resetting gameBall");
         
-        double x = ( (Math.random()*Math.PI/2)-Math.PI/4 );
-        gameBall.setmvX( (int) ((Math.cos(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
-        gameBall.setmvY( (int) ((Math.sin(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
+            Random rand = new Random();
+            int rInt;
+            //rnum = rand.nextInt((max - min) + 1 + min);
+
+            gameBall.setX(fSizeX/2 - (int)gameBall.getSize());
+            System.out.println("Setting setX() to " + gameBall.getX());
+            gameBall.setY(fSizeX/2 + (int)gameBall.getSize()/2);
+
+            rInt = rand.nextInt(2)*2-1;
+            double x = ((Math.PI / 2) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
+            System.out.println("rInt at x: " + rInt);
+            
+            rInt = rand.nextInt(2)*2-1;
+            double mvX = (int) ( ((Math.cos(x) * rInt)) * 10 );
+            System.out.println("mvX: " + mvX);
+            System.out.println("rInt at mvX: " + rInt);
+            
+            rInt = rand.nextInt(2)*2-1;
+            double mvY = (int) ( ((Math.sin(x) * rInt)) * 10 );
+            System.out.println("mvY: " + mvY);
+            System.out.println("rInt at mvY: " + rInt);
+            
+            gameBall.setmvX((int)mvX);
+            gameBall.setmvY((int)mvY);
     }
 
     @Override
@@ -212,7 +226,6 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
     }
 
     // Main KeyEvent Method
-
     @Override
     public void keyPressed(KeyEvent e) {
         //System.out.print(e.getKeyCode());
@@ -232,7 +245,7 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new TestPong();
+        JFrame frame = new Pong();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Pong");
 
@@ -240,26 +253,41 @@ public class TestPong extends JFrame implements ActionListener, KeyListener {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-        
         //Reset gameball
-        gameBall.setX(fSizeX / 2);
-        gameBall.setY( (int) ( (fSizeY / 2) + ( ((Math.random() * 19) + 1) * (int) ((Math.random()) * 2) - 1 ) ) );
+            System.out.println("START: Resetting gameBall");
         
-        double x = ( (Math.random()*Math.PI/2)-Math.PI/4 );
-        gameBall.setmvX( (int) ((Math.cos(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
-        
+            Random rand = new Random();
+            int rInt;
+            //rnum = rand.nextInt((max - min) + 1 + min);
 
-        //Math.cos(x) * (int) (Math.random()*2)
+            gameBall.setX(fSizeX/2 - (int)gameBall.getSize());
+            System.out.println("Setting setX() to " + gameBall.getX());
+            gameBall.setY(fSizeX/2 + (int)gameBall.getSize()/2);
 
-        //Math.cos(x) * (int) (Math.random()*2)
-
-        
-        gameBall.setmvY( (int) ((Math.sin(x) * ((((int) (Math.random()*2) - 1) + 1)*2))));
-
-        frame.setVisible(true);
-        System.out.println(x);
-        System.out.println(gameBall.getmvX());
-        System.out.println(gameBall.getmvY());
+            rInt = rand.nextInt(2)*2-1;
+            double x = ((Math.PI / 2) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
+            System.out.println("rInt at x: " + rInt);
+            
+            rInt = rand.nextInt(2)*2-1;
+            double mvX = (int) ( ((Math.cos(x) * rInt)) * 3 );
+            System.out.println("mvX: " + mvX);
+            System.out.println("rInt at mvX: " + rInt);
+            
+            rInt = rand.nextInt(2)*2-1;
+            double mvY = (int) ( ((Math.sin(x) * rInt)) * 3 );
+            System.out.println("mvY: " + mvY);
+            System.out.println("rInt at mvY: " + rInt);
+            
+            gameBall.setmvX((int)mvX);
+            gameBall.setmvY((int)mvY);
+            
+            System.out.println(p1.getBounds().toString());
+            System.out.println(p2.getBounds().toString());
+            
+            
+            
+            
+            frame.setVisible(true);
     }
 
 }
