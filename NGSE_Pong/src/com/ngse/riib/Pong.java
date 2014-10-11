@@ -23,20 +23,20 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
     private static int pSizeX = 25;
     private static int pSizeY = 75;
 
-    private static int ballSize = 50;
+    private static int ballSize = 10;
     private static int ballX = fSizeX / 2;
     private static int ballY = fSizeY / 2;
 
     private static int p1X = 50;
     private static int p1Y = fSizeY / 2;
     private static int p1Dir = 0;
-    private static int p1Speed = 1;
+    private static int p1Speed = 3;
     private static Rectangle p1 = new Rectangle(p1X - pSizeX / 2, p1Y - pSizeY / 2, pSizeX, pSizeY);
 
     private static int p2X = fSizeX - 50;
     private static int p2Y = fSizeY / 2;
     private static int p2Dir = 0;
-    private static int p2Speed = 1;
+    private static int p2Speed = 3;
     private static Rectangle p2 = new Rectangle(p2X - pSizeX / 2, p2Y - pSizeY / 2, pSizeX, pSizeY);
 
     private static GameBall gameBall = new GameBall(fSizeX / 2 - 5, fSizeY / 2 - 5, 0, 0, 20);
@@ -64,39 +64,40 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         g2.fill(rect);
 
         g2.setColor(Color.BLACK);
-        p1.setRect(p1X - pSizeX / 2, p1Y - pSizeY / 2, pSizeX, pSizeY);
+        p1.setRect(p1X, p1Y, pSizeX, pSizeY);
         g2.fill(p1);
-        p2.setRect(p2X - pSizeX / 2, p2Y - pSizeY / 2, pSizeX, pSizeY);
+        p2.setRect(p2X, p2Y, pSizeX, pSizeY);
         g2.fill(p2);
 
         g2.setColor(Color.RED);
+        gameBall.setSize(ballSize);
         g2.fill(gameBall.getEllipse());
     }
 
     public void update() {
+        double p1TopY = p1Y;
+        double p1Bottom = p1Y + pSizeY;
+        
+        double p2TopY = p2Y;
+        double p2Bottom = p2Y + pSizeY;        
+        
         if (p1Dir != 0) {
-            if (p1Y + pSizeY < fSizeY) {
-                p1Y += p1Speed * p1Dir;
+            if (p1Bottom < fSizeY && p1TopY > 0) {
+                p1Y += p1Speed * p1Dir; //update
             } else {
-                p1Y -= p1Speed;
-            }
-            if (p1Y - pSizeY > 0) {
-                p1Y += p1Speed * p1Dir;
-            } else {
-                p1Y += p1Speed;
+                p1Y -= p1Speed * p1Dir;
+                p1Dir = 0;
+                //nothing
             }
         }
 
         if (p2Dir != 0) {
-            if (p2Y + pSizeY < fSizeY) {
+            if (p2Bottom < fSizeY && p2TopY > 0) {
                 p2Y += p2Speed * p2Dir;
             } else {
-                p2Y -= p2Speed;
-            }
-            if (p2Y - pSizeY > 0) {
-                p2Y += p2Speed * p2Dir;
-            } else {
-                p2Y += p2Speed;
+                p2Y -= p2Speed * p2Dir;
+                p2Dir = 0;
+                //nothing
             }
         }
 
@@ -123,12 +124,12 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         )) {
 
             double p1Cent = p1Y + (pSizeY / 2);
-            double xDiff1 = pSizeX / 2 + gameBall.getSize() / 2;
-            double yDiff1 = p1Cent - (bCent - gameBall.getSize());
-            double angle1 = Math.atan2(yDiff1, xDiff1);
+            double xDiff1 = pSizeX / 2 + gameBall.getSize() / (100/pSizeY);
+            double yDiff1 = p1Cent - (bCent);
+            double angle1 = (Math.atan2(yDiff1, xDiff1)) / (100/pSizeY);
 
             gameBall.setmvX((int) (((Math.cos(angle1)))*5));
-            gameBall.setmvY((int) (((Math.sin(angle1)))*5) * -1);
+            gameBall.setmvY((int) (((Math.sin(angle1)))*5) * -1); // * -1
 
         }
         //Hits p2 paddle
@@ -139,12 +140,12 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         )) {
 
             double p2Cent = p2Y + (pSizeY / 2);
-            double xDiff2 = pSizeX / 2 + gameBall.getSize() / 2;
-            double yDiff2 = p2Cent - (bCent - gameBall.getSize());
-            double angle2 = Math.atan2(yDiff2, xDiff2);
+            double xDiff2 = pSizeX / 2 + gameBall.getSize() / (100/pSizeY);
+            double yDiff2 = p2Cent - (bCent);
+            double angle2 = (Math.atan2(yDiff2, xDiff2)) / (100/pSizeY);
 
             gameBall.setmvX((int) (((Math.cos(angle2)))*5) * -1);
-            gameBall.setmvY((int) (((Math.sin(angle2)))*5) * -1);
+            gameBall.setmvY((int) (((Math.sin(angle2)))*5) * -1); // * -1
 
         }
         //If the gameBall hits a wall
@@ -184,16 +185,16 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
             gameBall.setY(fSizeX/2 + (int)gameBall.getSize()/2);
 
             rInt = rand.nextInt(2)*2-1;
-            double x = ((Math.PI / 2) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
+            double x = ((Math.PI / 4) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
             System.out.println("rInt at x: " + rInt);
             
             rInt = rand.nextInt(2)*2-1;
-            double mvX = (int) ( ((Math.cos(x) * rInt)) * 10 );
+            double mvX = (int) ( ((Math.cos(x) * rInt)) * 2 );
             System.out.println("mvX: " + mvX);
             System.out.println("rInt at mvX: " + rInt);
             
             rInt = rand.nextInt(2)*2-1;
-            double mvY = (int) ( ((Math.sin(x) * rInt)) * 10 );
+            double mvY = (int) ( ((Math.sin(x) * rInt)) * 2 );
             System.out.println("mvY: " + mvY);
             System.out.println("rInt at mvY: " + rInt);
             
@@ -265,16 +266,16 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
             gameBall.setY(fSizeX/2 + (int)gameBall.getSize()/2);
 
             rInt = rand.nextInt(2)*2-1;
-            double x = ((Math.PI / 2) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
+            double x = ((Math.PI / 4) * (double)rInt) - ((Math.PI / 4) * (double)rInt );
             System.out.println("rInt at x: " + rInt);
             
             rInt = rand.nextInt(2)*2-1;
-            double mvX = (int) ( ((Math.cos(x) * rInt)) * 3 );
+            double mvX = (int) ( ((Math.cos(x) * rInt)) * 2 );
             System.out.println("mvX: " + mvX);
             System.out.println("rInt at mvX: " + rInt);
             
             rInt = rand.nextInt(2)*2-1;
-            double mvY = (int) ( ((Math.sin(x) * rInt)) * 3 );
+            double mvY = (int) ( ((Math.sin(x) * rInt)) * 2 );
             System.out.println("mvY: " + mvY);
             System.out.println("rInt at mvY: " + rInt);
             
