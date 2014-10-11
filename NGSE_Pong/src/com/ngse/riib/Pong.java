@@ -11,11 +11,16 @@ import java.awt.geom.*;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import com.ngse.riib.GameBall;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Pong extends JFrame implements ActionListener, KeyListener {
 
     Timer timer;
     ActionListener actLis;
+    
+    private static boolean reset;
 
     private static int fSizeX = 800;
     private static int fSizeY = 400;
@@ -23,7 +28,7 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
     private static int pSizeX = 25;
     private static int pSizeY = 75;
 
-    private static int ballSize = 10;
+    private static int ballSize = 20;
     private static int ballX = fSizeX / 2;
     private static int ballY = fSizeY / 2;
 
@@ -32,12 +37,16 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
     private static int p1Dir = 0;
     private static int p1Speed = 3;
     private static Rectangle p1 = new Rectangle(p1X - pSizeX / 2, p1Y - pSizeY / 2, pSizeX, pSizeY);
+    
+    private static int p1Score;
 
     private static int p2X = fSizeX - 50;
     private static int p2Y = fSizeY / 2;
     private static int p2Dir = 0;
     private static int p2Speed = 3;
     private static Rectangle p2 = new Rectangle(p2X - pSizeX / 2, p2Y - pSizeY / 2, pSizeX, pSizeY);
+    
+    private static int p2Score;
 
     private static GameBall gameBall = new GameBall(fSizeX / 2 - 5, fSizeY / 2 - 5, 0, 0, 20);
 
@@ -55,10 +64,22 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
 
     @Override
     public void paint(Graphics g) {
-
-        update();
-
+        
         Graphics2D g2 = (Graphics2D) g;
+        if(reset) {
+            g2.drawString("Player 1 Score: " + p1Score, fSizeX*1/4-50, fSizeY*1/6);
+            g2.drawString("Player 2 Score: " + p2Score, fSizeX*3/4-50, fSizeY*1/6);
+            g2.drawString("3", fSizeX/2-5, fSizeY/2-40);
+            try { Thread.sleep(1000); } catch (InterruptedException ex) {}
+            g2.drawString("2", fSizeX/2-5, fSizeY/2-20);
+            try { Thread.sleep(1000); } catch (InterruptedException ex) {}
+            g2.drawString("1", fSizeX/2-5, fSizeY/2);
+            try { Thread.sleep(1000); } catch (InterruptedException ex) {}
+            
+            reset = false;
+        }
+        
+        update();
 
         g2.setColor(Color.WHITE);
         g2.fill(rect);
@@ -82,22 +103,30 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         double p2Bottom = p2Y + pSizeY;        
         
         if (p1Dir != 0) {
-            if (p1Bottom < fSizeY && p1TopY > 0) {
-                p1Y += p1Speed * p1Dir; //update
-            } else {
-                p1Y -= p1Speed * p1Dir;
+            if (p1Bottom > fSizeY) {
+                p1Y = fSizeY - pSizeY;
                 p1Dir = 0;
-                //nothing
+            } else 
+            if (p1TopY < 0){
+                p1Y = 0;
+                p1Dir = 0;
+            } else {
+                //normal update
+                p1Y += p1Speed * p1Dir; //update
             }
         }
 
         if (p2Dir != 0) {
-            if (p2Bottom < fSizeY && p2TopY > 0) {
-                p2Y += p2Speed * p2Dir;
-            } else {
-                p2Y -= p2Speed * p2Dir;
+            if (p2Bottom > fSizeY) {
+                p2Y = fSizeY - pSizeY;
                 p2Dir = 0;
-                //nothing
+            } else 
+            if (p2TopY < 0){
+                p2Y = 0;
+                p2Dir = 0;
+            } else {
+                //normal update
+                p2Y += p2Speed * p2Dir; //update
             }
         }
 
@@ -153,13 +182,12 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         if ((getY <= 0 + (gameBall.getSize()) || getY >= fSizeY - (gameBall.getSize()))) {
             gameBall.setmvY((int) (gameBall.getmvY() * -1));
         }
-
+        
         int getX = (int) gameBall.getX();
         if (getX <= 0) {
-            //gameBall.setmvX(gameBall.getmvX() * -1);
-            score(1);
-        } else if (getX >= fSizeX - (gameBall.getSize())) {
             score(2);
+        } else if (getX >= fSizeX - (gameBall.getSize())) {
+            score(1);
         }
 
         gameBall.move();
@@ -167,6 +195,15 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
 
     public void score(int player) {
 
+        switch(player) {
+            case 1:
+                p1Score++;
+                break;
+            case 2:
+                p2Score++;
+                break;
+        }
+        
         System.out.println("Player " + player + " scores!");
         reset();
 
@@ -175,6 +212,8 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
     public void reset() {
         //Reset gameball
             System.out.println("DURING: Resetting gameBall");
+            
+            reset = true;
         
             Random rand = new Random();
             int rInt;
@@ -245,7 +284,7 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         repaint();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         JFrame frame = new Pong();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Pong");
@@ -253,8 +292,14 @@ public class Pong extends JFrame implements ActionListener, KeyListener {
         frame.setSize(fSizeX, fSizeY);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        
+        p1Score = 0;
+        p2Score = 0;
 
         //Reset gameball
+        
+            reset = true;
+        
             System.out.println("START: Resetting gameBall");
         
             Random rand = new Random();
